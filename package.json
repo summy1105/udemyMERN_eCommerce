@@ -1,0 +1,37 @@
+{
+  "name": "proshop",
+  "version": "1.0.0",
+  "description": "MERN shopping cart app",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import": "node backend/seeder",
+    "data:destroy": "node backend/seeder -d"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/summy1105/udemyMERN_eCommerce.git"
+  },
+  "author": "author",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/summy1105/udemyMERN_eCommerce/issues"
+  },
+  "homepage": "https://github.com/summy1105/udemyMERN_eCommerce#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "dotenv": "^14.3.2",
+    "express": "^4.17.2",
+    "mongoose": "^6.1.8"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "nodemon": "^2.0.15"
+  }
+}
