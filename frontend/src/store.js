@@ -4,13 +4,16 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { productDetailReducer, productListReducer } from './reducers/productReducers.js';
 import { cartReducer } from './reducers/carReducers';
-import { userLoginReducer } from './reducers/userReducers';
+import { userDetailReducer, userLoginReducer, userRegisterReducer, userUpdateProfileReducer } from './reducers/userReducers';
 
 const reducer = combineReducers({
   productList: productListReducer,
   productDetails: productDetailReducer,
   cart: cartReducer,
   userLogin: userLoginReducer,
+  userRegister: userRegisterReducer,
+  userDetails: userDetailReducer,
+  userUpdateProfile: userUpdateProfileReducer,
 });
 
 const cartItemsFromStorage
