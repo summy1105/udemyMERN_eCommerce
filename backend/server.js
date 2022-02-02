@@ -4,6 +4,7 @@ import colors from 'colors';
 import connectDB from './config/db.js';
 
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 dotenv.config();
@@ -11,6 +12,7 @@ connectDB();
 
 const app = express();
 
+app.use(express.json());
 
 // express는 스프링과 다르게 handler를 등록하는 순서가 중요하다.
 // 모든 url을 처리하는 handler등록전에 parameter가 3개인 핸들러를 등록하면 request filter역할을 한다.
@@ -20,7 +22,7 @@ const app = express();
 
 // 미들웨어로 filter역할을 할 메소드를 등록한다.
 // 다른 request를 처리하는 로직전에 지정하면, request를 처리하기 전에 실행된다.
-app.use((req, res, next)=>{
+app.use((req, res, next) => {
   console.log(req.originalUrl);
   next();
 })
@@ -32,6 +34,7 @@ app.get("/", (req, res) => {
 
 
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
 
 
 
