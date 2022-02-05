@@ -5,10 +5,8 @@ import { Link } from 'react-router-dom';
 import { createOrder } from '../actions/orderActions';
 import CheckoutSteps from '../components/CheckoutSteps';
 import Message from '../components/Message';
+import { addDecimals } from '../utils/app-lib';
 
-const addDecimals = (num) => {
-  return (Math.round(num * 100) / 100).toFixed(2);
-}
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
