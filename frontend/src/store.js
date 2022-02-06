@@ -5,7 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { productDetailReducer, productListReducer } from './reducers/productReducers.js';
 import { cartReducer } from './reducers/cartReducers';
 import { userDetailReducer, userLoginReducer, userRegisterReducer, userUpdateProfileReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer } from './reducers/orderReducers.js';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer } from './reducers/orderReducers.js';
 
 const reducer = combineReducers({
   productList: productListReducer,
@@ -17,6 +17,7 @@ const reducer = combineReducers({
   userUpdateProfile: userUpdateProfileReducer,
   orderCreate : orderCreateReducer,
   orderDetails : orderDetailsReducer,
+  orderPay: orderPayReducer,
 });
 
 const cartItemsFromStorage
@@ -34,6 +35,7 @@ const shippingAddressFromStorage
 const paymentMethodFromStorage
   = localStorage.getItem('paymentMethod')
     ? JSON.parse(localStorage.getItem('paymentMethod')) : {};
+    
 const initialState = {
   cart: {
     cartItems: cartItemsFromStorage,

@@ -38,6 +38,19 @@ app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes)
 
+app.get("/api/config/paypal", (req, res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID);
+})
+
+// fake paypal javascript
+app.get("/sdk/js", (req, res) => {
+  const { "client-id" : clientId } = req.query;
+  if(clientId !== process.env.PAYPAL_CLIENT_ID){
+    res.status(404);
+    throw new Error("client-id error");
+  }
+  res.send(null);
+})
 
 // 여기 전에 등록되어 있는 handler에서 해당되는 url이 없을 경우 실행 된다.
 app.use(notFound)
