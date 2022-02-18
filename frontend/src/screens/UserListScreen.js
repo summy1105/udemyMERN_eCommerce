@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { deletetUser, deleteUser, listUsers } from '../actions/userActions';
+import { deleteUser, listUsers } from '../actions/userActions';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 
@@ -16,7 +16,7 @@ const UserListScreen = ({history}) => {
   const { userInfo } = userLogin;
 
   const userDelete = useSelector(state => state.userDelete);
-  const { loading : loadingDelete, success: successDelete, error: errDelete } = userDelete;
+  const { success: successDelete } = userDelete;
 
   useEffect(() => {
     if(userInfo && userInfo.isAdmin){
@@ -28,7 +28,7 @@ const UserListScreen = ({history}) => {
 
   const deleteHandler = (id) => {
     if(window.confirm("Are you sure?"))
-      dispatch(deleteUser(id));
+      dispatch(deleteUser(id)); 
   }
 
   return (
@@ -60,7 +60,7 @@ const UserListScreen = ({history}) => {
                     : (<i className="fas fa-times" style={{color: "red"}}></i>)}
                   </td>
                   <td>
-                    <LinkContainer to={`/user/${user._id}/edit`}>
+                    <LinkContainer to={`/admin/user/${user._id}/edit`}>
                       <Button variant="light" className="btn-sm">
                         <i className="fas fa-edit"></i>
                       </Button>
