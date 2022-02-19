@@ -1,9 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 
-
-
-
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
@@ -89,4 +86,32 @@ export const getMyOrders = asyncHandler(async (req, res)=> {
   const orders = await Order.find({ user: req.user._id });
 
   res.json(orders);
+})
+
+// @desc    Get all orders
+// @route   GET /api/orders
+// @access  Private/Admin
+export const getOrders = asyncHandler(async (req, res)=> {
+  const orders = await Order.find({}).populate("user", "id name");
+  res.json(orders);
+})
+
+// @desc    Update order to delivered
+// @route   PUT /api/orders/:id/deliver
+// @access  Private/Admin
+export const updateOrderToDelivered = asyncHandler(async (req, res)=> {
+  const orderId = req.params.id;
+  const order = await Order.findById(orderId);
+
+  if(order){
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+       
+    const updatedOrder = await order.save();
+
+    res.json(updatedOrder);
+  }else{
+    res.status(404);
+    throw new Error("Order not found");
+  }
 })

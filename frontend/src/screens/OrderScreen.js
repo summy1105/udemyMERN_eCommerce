@@ -3,13 +3,13 @@ import { PayPalButton } from 'react-paypal-button-v2';
 import { Button, Card, Col, Image, ListGroup, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getOrderDetails, payOrder } from '../actions/orderActions';
+import { deliverOrder, getOrderDetails, payOrder } from '../actions/orderActions';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { addDecimals, addPayPalScript, generateString } from '../utils/app-lib';
-import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { ORDER_DELIVER_RESET, ORDER_PAY_RESET } from '../constants/orderConstants';
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
   const [sdkReady, setSdkReady] = useState(false);
 
@@ -21,8 +21,12 @@ const OrderScreen = ({ match }) => {
   const orderPay = useSelector(state => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
 
+  const orderDeliver = useSelector(state => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver, error: errDeliver } = orderDeliver;
+
   const userLogin = useSelector(state => state.userLogin);
   const { userInfo } = userLogin;
+
   if (!loading) {
     order.itemsPrice = addDecimals(
       order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
@@ -30,10 +34,13 @@ const OrderScreen = ({ match }) => {
   }
 
   useEffect(() => {
-    if (!order || order._id !== orderId || successPay) {
+    if (!userInfo) {
+      history.push("/login");
+    } else if (!order || order._id !== orderId || successPay || successDeliver) {
       // order가 생성되면서 reRednering되고 
       // successPay가 true가 되면서 다시 실행되기 때문에 orderPay가 reset되어야함
-      dispatch({type: ORDER_PAY_RESET});
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -42,7 +49,7 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true);
       }
     }
-  }, [order, orderId, dispatch, successPay]);
+  }, [history, userInfo, order, orderId, dispatch, successPay, successDeliver]);
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult));
@@ -50,6 +57,11 @@ const OrderScreen = ({ match }) => {
 
   const fakePaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult));
+  }
+
+  const deliverHandler = (e) => {
+    e.preventDefault();
+    dispatch(deliverOrder(orderId));
   }
 
   return (
@@ -178,6 +190,19 @@ const OrderScreen = ({ match }) => {
                           )}
                         </ListGroup.Item>
                       )}
+
+                      {userInfo && userInfo.isAdmin
+                        && order.isPaid && !order.isDelivered
+                        && (loadingDeliver ?
+                          <Loader />
+                          : errDeliver
+                            ? <Message variant="danger">{errDeliver}</Message>
+                            : (<ListGroup.Item>
+                              <Button type="button" className="btn btn-block" onClick={deliverHandler}>
+                                Mark As Delivered
+                              </Button>
+                            </ListGroup.Item>)
+                        )}
                     </ListGroup>
                   </Card>
                 </Col>

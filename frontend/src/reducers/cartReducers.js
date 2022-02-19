@@ -1,4 +1,6 @@
 import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_SAVE_PAYMENT_METHOD, CART_SAVE_SHIPPING_ADDRESS } from '../constants/cartConstants';
+import { ORDER_PAY_SUCCESS } from '../constants/orderConstants';
+import { USER_LOGOUT } from '../constants/userConstants';
 
 export const cartReducer = (state = { cartItems: [] }, action) => {
   switch (action.type) {
@@ -33,6 +35,9 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
         ...state,
         paymentMethod: action.payload,
       }
+    case USER_LOGOUT:
+    case ORDER_PAY_SUCCESS:
+      return { cartItems: [] }
     default:
       return state;
   }
