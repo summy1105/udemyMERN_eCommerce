@@ -6,7 +6,12 @@ import User from '../models/userModel.js';
 // @route   Get /api/products
 // @access  Public
 export const getProducts = asyncHandler(async (req, res)=> {
-  const product = await Product.find({});
+  const keyword = req.query.keyword ? { name : {
+    $regex:req.query.keyword,
+    $options:"i"
+  }} : {};
+
+  const product = await Product.find({...keyword});
 
   res.json(product);
 })
