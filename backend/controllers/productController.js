@@ -100,3 +100,43 @@ export const updateProduct = asyncHandler(async (req, res) => {
     throw new Error("Product not found");
   }
 })
+
+// @desc    Create new review
+// @route   POST /api/products/:id/reviews
+// @access  Private
+export const createProductReview = asyncHandler(async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.user._id
+
+  const { rating, comment } = req.body;
+
+  const product = await Product.findById(productId);
+
+  if (product) {
+    const alreadyReviewed = product.reviews.find(r=>r.user.toString() === userId.toString());
+    
+    if(alreadyReviewed){
+      res.status(400);
+      throw new Error("Product already reviewed");
+    }
+
+    const review = {
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+      user: userId,
+    }
+
+    product.reviews.push(review);
+    
+    product.numReviews = product.reviews.length;
+    product.rating  = product.reviews.reduce((acc, item)=>item.rating + acc, 0)/product.numReviews;
+
+    await product.save();
+    res.status(201).json({message: "Review added"});
+
+  } else {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+})

@@ -2,18 +2,23 @@ import path from 'path'
 import express from "express";
 import dotenv from "dotenv";
 import colors from 'colors';
+import morgan from 'morgan';
 import connectDB from './config/db.js';
 
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
-import uploadRoutes from './routes/uploadRoutes.js'; 
+import uploadRoutes from './routes/uploadRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 dotenv.config();
 connectDB();
 
 const app = express();
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 app.use(express.json());
 
@@ -25,10 +30,10 @@ app.use(express.json());
 
 // 미들웨어로 filter역할을 할 메소드를 등록한다.
 // 다른 request를 처리하는 로직전에 지정하면, request를 처리하기 전에 실행된다.
-app.use((req, res, next) => {
-  console.log(req.originalUrl);
-  next();
-})
+// app.use((req, res, next) => {
+//   console.log(req.originalUrl);
+//   next();
+// })
 
 
 app.get("/", (req, res) => {
@@ -51,8 +56,8 @@ app.use("/uploads", express.static(path.join(__dirname, "/uploads")))
 
 // fake paypal javascript
 app.get("/sdk/js", (req, res) => {
-  const { "client-id" : clientId } = req.query;
-  if(clientId !== process.env.PAYPAL_CLIENT_ID){
+  const { "client-id": clientId } = req.query;
+  if (clientId !== process.env.PAYPAL_CLIENT_ID) {
     res.status(404);
     throw new Error("client-id error");
   }
