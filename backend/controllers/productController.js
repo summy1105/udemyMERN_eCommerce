@@ -6,7 +6,7 @@ import User from '../models/userModel.js';
 // @route   Get /api/products
 // @access  Public
 export const getProducts = asyncHandler(async (req, res)=> {
-  const pageSize = 2;
+  const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
 
   const keyword = req.query.keyword ? { name : {
@@ -148,4 +148,14 @@ export const createProductReview = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Product not found");
   }
+})
+
+// @desc    Get top reated products
+// @route   POST /api/products/top
+// @access  Public
+export const getTopProducts = asyncHandler(async (req, res)=>{
+  console.log('top');
+  const products = await Product.find({}).sort({ rating: -1 }).limit(3); // decending order => -1
+
+  res.json(products)
 })

@@ -7,6 +7,9 @@ import Paginate from '../components/Paginate'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../actions/productActions';
+import ProductCarousel from "../components/ProductCarousel";
+import Meta from "../components/Meta";
+import { Link } from "react-router-dom";
 
 const HomeScreen = ({ match }) => {
   const keyword = match.params.keyword;
@@ -23,6 +26,8 @@ const HomeScreen = ({ match }) => {
 
   return (
     <>
+      {/* <Meta /> */}
+      {!keyword ?  <ProductCarousel /> : <Link to='/' className='btn btn-light'>Go Back</Link>}
       <h1>Lastest Products</h1>
       {loading
         ? <Loader />
@@ -39,7 +44,7 @@ const HomeScreen = ({ match }) => {
             </Row>
             <Paginate pages={pages} page={page} keyword={keyword} />
           </>
-      } 
+      }
     </>
   );
 };
